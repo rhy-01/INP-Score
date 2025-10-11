@@ -628,62 +628,71 @@
       }
     });
     // 查詢成績
-    async function queryScore() {
-  const studentId = document.getElementById('studentId').value.trim();
-  const studentName = document.getElementById('studentName').value.trim();
-  const alertContainer = document.getElementById('alert-container');
+    function queryScore() {
+      const studentId = document.getElementById('studentId').value.trim();
+      const studentName = document.getElementById('studentName').value.trim();
+      const alertContainer = document.getElementById('alert-container');
 
-  alertContainer.innerHTML = '';
+      alertContainer.innerHTML = '';
 
-  if (!studentId || !studentName) {
-    showAlert('請輸入學號和姓名', 'error');
-    return;
-  }
+      if (!studentId || !studentName) {
+        showAlert('請輸入學號和姓名', 'error');
+        return;
+      }
 
-  // 顯示 loading，隱藏表單和結果
-  document.getElementById('querySection').style.display = 'none';
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('result-section').style.display = 'none';
-  document.body.classList.add('loading-active');
+      // 顯示 loading，隱藏表單和結果
+      document.getElementById('querySection').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('result-section').style.display = 'none';
 
-  try {
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbwyVqfpNIPE1E_EXds2zk4veSHOnq-PMYm4TtfI3e1hC_PMCUu3fYu5SjJ3g0B7RESdJg/exec' +
-                   `?api=getScore&studentId=${encodeURIComponent(studentId)}&studentName=${encodeURIComponent(studentName)}`;
+      // 隱藏主題切換按鈕
+      document.body.classList.add('loading-active');
 
-    const res = await fetch(apiUrl);
-    const data = await res.json();
-
-    // 處理結果
-    if (data.success) {
-      // 顯示當前時間
-      const now = new Date();
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
-      document.getElementById('scoreDate').textContent = now.toLocaleString('en-US', options) + ' GMT+8';
-
-      document.getElementById('displayStudentId').textContent = data.studentId;
-      document.getElementById('displayName').textContent = data.name;
-      document.getElementById('displayDepartment').textContent = data.department;
-
-      document.getElementById('hw1Score').textContent = data.hw1;
-      document.getElementById('hw2Score').textContent = data.hw2;
-      document.getElementById('hw3Score').textContent = data.hw3;
-      document.getElementById('totalScore').textContent = data.totalScore;
-
-      document.getElementById('result-section').style.display = 'block';
-    } else {
-      showAlert(data.message || '查詢失敗', 'error');
-      document.getElementById('querySection').style.display = 'block';
+      google.script.run
+        .withSuccessHandler(onScoreSuccess)
+        .withFailureHandler(onFailure)
+        .getVerifiedScore(studentId, studentName);
     }
 
-  } catch (error) {
-    console.error(error);
-    showAlert('系統錯誤，請稍後再試', 'error');
-    document.getElementById('querySection').style.display = 'block';
-  } finally {
-    document.getElementById('loading').style.display = 'none';
-    document.body.classList.remove('loading-active');
-  }
-}
+    // 成功回調
+    function onScoreSuccess(result) {
+      document.getElementById('loading').style.display = 'none';
+
+      // 移除 loading-active class
+      document.body.classList.remove('loading-active');
+
+      if (result.success) {
+        // 顯示當前時間
+        const now = new Date();
+        const options = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+        const dateStr = now.toLocaleString('en-US', options) + ' GMT+8';
+        document.getElementById('scoreDate').textContent = dateStr;
+
+        // 填充學生資訊
+        document.getElementById('displayStudentId').textContent = result.studentId;
+        document.getElementById('displayName').textContent = result.name;
+        document.getElementById('displayDepartment').textContent = result.department;
+
+        // 填充成績
+        document.getElementById('hw1Score').textContent = result.hw1;
+        document.getElementById('hw2Score').textContent = result.hw2;
+        document.getElementById('hw3Score').textContent = result.hw3;
+        document.getElementById('totalScore').textContent = result.totalScore;
+
+        document.getElementById('result-section').style.display = 'block';
+
+      } else {
+        document.getElementById('querySection').style.display = 'block';
+        showAlert(result.message, 'error');
+      }
+    }
 
     
     // 錯誤處理
