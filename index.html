@@ -627,153 +627,24 @@
         setTheme(e.matches ? 'dark' : 'light');
       }
     });
-    
-    // ============================================
-    // 過渡動畫邏輯說明
-    // ============================================
-    /*
-    當切換 Dark/Light Mode 時，會看到平滑的顏色過渡動畫。
-    這是怎麼做到的？
-    
-    【核心技術：CSS Variables + CSS Transition】
-    
-    1. CSS Variables (CSS 自定義屬性)
-       --------------------------------
-       在 CSS 中定義顏色變數：
-       
-       :root {
-         --bg-color: #ffffff;      // Light Mode 白色背景
-         --text-color: #000000;    // Light Mode 黑色文字
-       }
-       
-       [data-theme="dark"] {
-         --bg-color: #000000;      // Dark Mode 黑色背景
-         --text-color: #ffffff;    // Dark Mode 白色文字
-       }
-       
-       使用變數：
-       body {
-         background: var(--bg-color);
-         color: var(--text-color);
-       }
-    
-    2. CSS Transition (過渡動畫)
-       --------------------------
-       告訴瀏覽器：當屬性改變時，不要立刻改變，而是平滑過渡
-       
-       body {
-         transition: background-color 0.3s, color 0.3s;
-         // 意思是：背景色和文字色改變時，花 0.3 秒平滑過渡
-       }
-       
-       .btn {
-         transition: all 0.3s ease;
-         // 意思是：所有屬性改變時，花 0.3 秒平滑過渡
-         // ease = 緩動函數（開始慢→中間快→結束慢）
-       }
-    
-    3. 完整觸發流程
-       -------------
-       Step 1: 用戶點擊 DARK/LIGHT 按鈕
-       
-       Step 2: JavaScript 執行 toggleTheme()
-               → 讀取目前主題 'light'
-               → 切換到 'dark'
-       
-       Step 3: setTheme('dark') 執行
-               → document.documentElement.setAttribute('data-theme', 'dark')
-               → 在 <html> 標籤加上 data-theme="dark" 屬性
-       
-       Step 4: CSS 偵測到屬性改變
-               → 瀏覽器發現 [data-theme="dark"] 選擇器生效了
-               → 套用 Dark Mode 的 CSS Variables
-               → --bg-color 從 #ffffff 變成 #000000
-               → --text-color 從 #000000 變成 #ffffff
-       
-       Step 5: Transition 動畫觸發
-               → 瀏覽器發現 background-color 要從白變黑
-               → 因為有 transition: background-color 0.3s;
-               → 自動計算 0.3 秒內的中間值
-               → 產生平滑漸變動畫！
-    
-    4. 為什麼看起來很平滑？
-       -------------------
-       瀏覽器會自動計算中間的過渡幀：
-       
-       背景色從白到黑 (0.3秒內)：
-       t=0.00s: #ffffff (白)
-       t=0.05s: #e6e6e6 (淺灰)
-       t=0.10s: #cccccc (灰)
-       t=0.15s: #999999 (中灰)
-       t=0.20s: #666666 (深灰)
-       t=0.25s: #333333 (很深灰)
-       t=0.30s: #000000 (黑)
-       
-       每秒 60 幀，0.3 秒就是 18 個漸變幀，非常平滑！
-    
-    5. 哪些元素有過渡動畫？
-       -------------------
-       所有使用 CSS Variables 的元素都會有：
-       - body 背景和文字
-       - 按鈕背景和文字
-       - 輸入框邊框
-       - 分數顯示區域
-       - Alert 提示框
-       - Loading 動畫
-       
-       因為它們都用 var(--xxx) 引用變數，
-       變數值改變時，都會觸發 transition！
-    
-    6. 實際範例
-       --------
-       Light Mode 下按鈕：
-       .btn {
-         background: var(--btn-bg);    // = #000000 (黑)
-         color: var(--btn-text);       // = #ffffff (白)
-         transition: all 0.3s ease;
-       }
-       
-       切換到 Dark Mode：
-       .btn {
-         background: var(--btn-bg);    // = #ffffff (白)
-         color: var(--btn-text);       // = #000000 (黑)
-         transition: all 0.3s ease;
-       }
-       
-       因為有 transition，背景色會從黑平滑變白，
-       文字色會從白平滑變黑，整個過程 0.3 秒！
-    
-    7. 技術優勢
-       --------
-       ✅ 不需要 JavaScript 動畫
-       ✅ 瀏覽器原生支援，效能最佳
-       ✅ 硬體加速，不會卡頓
-       ✅ 只需改變一個屬性，所有元素自動更新
-       ✅ 程式碼簡潔，維護容易
-    
-    總結：
-    CSS Variables 提供「顏色值」
-    CSS Transition 提供「過渡效果」
-    JavaScript 只需改變 data-theme 屬性
-    瀏覽器會自動完成所有平滑動畫！
-    */
-    
-    // ============================================
-    // 查詢成績功能
-    // ============================================
-    
     // 查詢成績
     async function queryScore() {
   const studentId = document.getElementById('studentId').value.trim();
   const studentName = document.getElementById('studentName').value.trim();
+  const alertContainer = document.getElementById('alert-container');
+
+  alertContainer.innerHTML = '';
 
   if (!studentId || !studentName) {
     showAlert('請輸入學號和姓名', 'error');
     return;
   }
 
+  // 顯示 loading，隱藏表單和結果
   document.getElementById('querySection').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
+  document.getElementById('result-section').style.display = 'none';
+  document.body.classList.add('loading-active');
 
   try {
     const apiUrl = 'https://script.google.com/macros/s/AKfycbwyVqfpNIPE1E_EXds2zk4veSHOnq-PMYm4TtfI3e1hC_PMCUu3fYu5SjJ3g0B7RESdJg/exec' +
@@ -782,56 +653,38 @@
     const res = await fetch(apiUrl);
     const data = await res.json();
 
-    onScoreSuccess(data);
+    // 處理結果
+    if (data.success) {
+      // 顯示當前時間
+      const now = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+      document.getElementById('scoreDate').textContent = now.toLocaleString('en-US', options) + ' GMT+8';
+
+      document.getElementById('displayStudentId').textContent = data.studentId;
+      document.getElementById('displayName').textContent = data.name;
+      document.getElementById('displayDepartment').textContent = data.department;
+
+      document.getElementById('hw1Score').textContent = data.hw1;
+      document.getElementById('hw2Score').textContent = data.hw2;
+      document.getElementById('hw3Score').textContent = data.hw3;
+      document.getElementById('totalScore').textContent = data.totalScore;
+
+      document.getElementById('result-section').style.display = 'block';
+    } else {
+      showAlert(data.message || '查詢失敗', 'error');
+      document.getElementById('querySection').style.display = 'block';
+    }
+
   } catch (error) {
     console.error(error);
     showAlert('系統錯誤，請稍後再試', 'error');
+    document.getElementById('querySection').style.display = 'block';
   } finally {
     document.getElementById('loading').style.display = 'none';
+    document.body.classList.remove('loading-active');
   }
 }
 
-
-    
-    // 成績查詢成功
-    function onScoreSuccess(result) {
-      document.getElementById('loading').style.display = 'none';
-      
-      // 移除 loading-active class
-      document.body.classList.remove('loading-active');
-      
-      if (result.success) {
-        // 顯示當前時間（英文格式）
-        const now = new Date();
-        const options = { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true
-        };
-        const dateStr = now.toLocaleString('en-US', options) + ' GMT+8';
-        document.getElementById('scoreDate').textContent = dateStr;
-        
-        // 顯示學生資訊
-        document.getElementById('displayStudentId').textContent = result.studentId;
-        document.getElementById('displayName').textContent = result.name;
-        document.getElementById('displayDepartment').textContent = result.department;
-        
-        // 顯示各項成績
-        document.getElementById('hw1Score').textContent = result.hw1;
-        document.getElementById('hw2Score').textContent = result.hw2;
-        document.getElementById('hw3Score').textContent = result.hw3;
-        document.getElementById('totalScore').textContent = result.totalScore;
-        
-        document.getElementById('result-section').style.display = 'block';
-        
-      } else {
-        document.getElementById('querySection').style.display = 'block';
-        showAlert(result.message, 'error');
-      }
-    }
     
     // 錯誤處理
     function onFailure(error) {
