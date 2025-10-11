@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="MobileOptimized" content="width">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>成績查詢系統</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+    }
+    
+    /* CSS Variables for Light/Dark Mode */
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --text-secondary: #666666;
+      --border-color: #e0e0e0;
+      --border-strong: #000000;
+      --btn-bg: #000000;
+      --btn-text: #ffffff;
+      --btn-hover: #333333;
+      --alert-error-bg: #fff3cd;
+      --alert-error-text: #856404;
+      --alert-error-border: #ffeaa7;
+      --alert-success-bg: #d4edda;
+      --alert-success-text: #155724;
+      --alert-success-border: #c3e6cb;
+      --spinner-bg: #f3f3f3;
+      --spinner-color: #000000;
+      --placeholder-color: #999999;
+    }
+    
+    /* Dark Mode */
+    [data-theme="dark"] {
+      --bg-color: #000000;
+      --text-color: #ffffff;
+      --text-secondary: #999999;
+      --border-color: #333333;
+      --border-strong: #ffffff;
+      --btn-bg: #ffffff;
+      --btn-text: #000000;
+      --btn-hover: #cccccc;
+      --alert-error-bg: #4a3800;
+      --alert-error-text: #ffeb99;
+      --alert-error-border: #806600;
+      --alert-success-bg: #1a3a1a;
+      --alert-success-text: #99ff99;
+      --alert-success-border: #2d662d;
+      --spinner-bg: #333333;
+      --spinner-color: #ffffff;
+      --placeholder-color: #666666;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.4;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Theme Toggle Button */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      border-radius: 3px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: 2px solid transparent;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      letter-spacing: 0.5px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .theme-toggle:hover {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 2px solid var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+    
+    /* 查詢表單 */
+    .query-section {
+      max-width: 600px;
+      margin: 0 auto;
+      background: transparent;
+      padding: 60px;
+    }
+    
+    .query-title {
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+    
+    .course-name {
+      font-size: 24px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-color);
+      margin-bottom: 40px;
+    }
+    
+    .form-group {
+      margin-bottom: 30px;
+    }
+    
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 16px 0;
+      border: none;
+      border-bottom: 2px solid var(--border-color);
+      font-size: 18px;
+      color: var(--text-color);
+      background: transparent;
+      transition: border-color 0.3s;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    
+    input:focus {
+      outline: none;
+      border-bottom-color: var(--border-strong);
+    }
+    
+    input::placeholder {
+      color: var(--placeholder-color);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 3px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 40px;
+    }
+    
+    .btn:hover {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 2px solid var(--border-strong);
+      padding: 16px;
+    }
+    
+    .btn:disabled {
+      background: var(--border-color);
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    
+    /* Alert */
+    .alert {
+      padding: 16px;
+      margin-bottom: 24px;
+      border-radius: 3px;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .alert-error {
+      background: var(--alert-error-bg);
+      color: var(--alert-error-text);
+      border: 1px solid var(--alert-error-border);
+    }
+    
+    .alert-success {
+      background: var(--alert-success-bg);
+      color: var(--alert-success-text);
+      border: 1px solid var(--alert-success-border);
+    }
+    
+    /* Loading */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 60px;
+      background: transparent;
+    }
+    
+    /* 當顯示 loading 時，隱藏主題切換按鈕 */
+    .loading-active .theme-toggle {
+      display: none;
+    }
+    
+    .spinner {
+      border: 3px solid var(--spinner-bg);
+      border-top: 3px solid var(--spinner-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* 成績顯示區域 */
+    .result-section {
+      display: none;
+      background: transparent;
+      padding: 80px 60px;
+      min-height: 600px;
+    }
+    
+    /* 標題區域 */
+    .score-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 80px;
+    }
+    
+    .score-left {
+      flex: 1;
+    }
+    
+    .score-title {
+      font-size: 48px;
+      font-weight: 700;
+      font-style: normal;
+      color: var(--text-color);
+      margin-bottom: 12px;
+    }
+    
+    .back-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 3px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 40px;
+    }
+    
+    .back-btn:hover {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 2px solid var(--border-strong);
+      padding: 10px 22px;
+    }
+    
+    .score-date {
+      font-size: 17px;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+    
+    .score-right {
+      text-align: right;
+    }
+    
+    .student-info-item {
+      margin-bottom: 16px;
+    }
+    
+    .student-info-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .student-info-label {
+      font-size: 17px;
+      color: var(--text-color);
+      display: inline;
+    }
+    
+    .student-info-value {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text-color);
+      display: block;
+      margin-top: 4px;
+    }
+    
+    /* 成績列表 */
+    .score-list {
+      margin-bottom: 0;
+    }
+    
+    .score-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .score-item:first-child {
+      border-top: 2px solid var(--border-strong);
+    }
+    
+    .score-item:last-child {
+      border-bottom: none;
+      border-top: 2px solid var(--border-strong);
+      padding-top: 32px;
+    }
+    
+    .score-item:last-child .score-label {
+      font-size: 36px;
+    }
+    
+    .score-item:last-child .score-value {
+      font-size: 64px;
+    }
+    
+    .score-label {
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--text-color);
+    }
+    
+    .score-item:last-child .score-label {
+      font-weight: 700;
+    }
+    
+    .score-value {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    
+    @media (max-width: 768px) {
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+      
+      body {
+        background: var(--bg-color);
+        padding: 0;
+        margin: 0;
+      }
+      
+      .container {
+        padding: 0;
+        max-width: 100%;
+        margin: 0;
+      }
+      
+      .query-section {
+        padding: 40px 25px;
+        max-width: 100%;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      
+      .query-title {
+        font-size: 48px;
+        margin-bottom: 8px;
+      }
+      
+      .course-name {
+        font-size: 20px;
+        margin-bottom: 40px;
+      }
+      
+      .form-group {
+        margin-bottom: 30px;
+      }
+      
+      label {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+      
+      input {
+        font-size: 18px;
+        padding: 16px 0;
+        border-bottom-width: 2px;
+      }
+      
+      .btn {
+        padding: 18px;
+        font-size: 18px;
+        margin-top: 40px;
+      }
+      
+      .result-section {
+        padding: 40px 25px;
+      }
+      
+      .score-header {
+        flex-direction: column;
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+      
+      .score-right {
+        text-align: left;
+      }
+      
+      .score-title {
+        font-size: 32px;
+        line-height: 1.2;
+      }
+      
+      .score-date {
+        font-size: 14px;
+      }
+      
+      .student-info-label {
+        font-size: 14px;
+      }
+      
+      .student-info-value {
+        font-size: 20px;
+      }
+      
+      .score-item {
+        padding: 24px 0;
+      }
+      
+      .score-label {
+        font-size: 20px;
+      }
+      
+      .score-item:last-child {
+        padding-top: 30px;
+      }
+      
+      .score-item:last-child .score-label {
+        font-size: 26px;
+      }
+      
+      .score-value {
+        font-size: 32px;
+      }
+      
+      .score-item:last-child .score-value {
+        font-size: 44px;
+      }
+      
+      .back-btn {
+        margin-bottom: 30px;
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+      }
+      
+      .loading {
+        background: var(--bg-color);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <span id="theme-text">DARK</span>
+  </button>
+  
+  <div class="container">
+    <!-- 查詢表單 -->
+    <div class="query-section" id="querySection">
+      <h1 class="query-title">Score</h1>
+      <div class="course-name">Introduction to Network Programming</div>
+      
+      <div id="alert-container"></div>
+      
+      <div class="form-group">
+        <label for="studentId">Student ID</label>
+        <input type="text" id="studentId" placeholder="123550000" autocomplete="off">
+      </div>
+      
+      <div class="form-group">
+        <label for="studentName">Name</label>
+        <input type="text" id="studentName" placeholder="王小明" autocomplete="off">
+      </div>
+      
+      <button class="btn" onclick="queryScore()" id="queryBtn">
+        查詢成績
+      </button>
+    </div>
+    
+    <!-- Loading -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p style="color: var(--text-secondary);">查詢中...</p>
+    </div>
+    
+    <!-- 查詢結果 -->
+    <div id="result-section" class="result-section">
+      <!-- 返回按鈕 -->
+      <button class="back-btn" onclick="backToLogin()">← Back to Login</button>
+      
+      <!-- 標題區域 -->
+      <div class="score-header">
+        <div class="score-left">
+          <div class="score-title">Introduction to Network Programming</div>
+          <div class="score-date" id="scoreDate">October 10, 2025 1:19 p.m. GMT+8</div>
+        </div>
+        <div class="score-right">
+          <div class="student-info-item">
+            <span class="student-info-label">Student ID</span>
+            <div class="student-info-value" id="displayStudentId">--</div>
+          </div>
+          <div class="student-info-item">
+            <span class="student-info-label">Name</span>
+            <div class="student-info-value" id="displayName">--</div>
+          </div>
+          <div class="student-info-item">
+            <span class="student-info-label">Department</span>
+            <div class="student-info-value" id="displayDepartment">--</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 成績列表 -->
+      <div class="score-list">
+        <div class="score-item">
+          <div class="score-label">Homework 1</div>
+          <div class="score-value" id="hw1Score">--</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">Homework 2</div>
+          <div class="score-value" id="hw2Score">--</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">Homework 3</div>
+          <div class="score-value" id="hw3Score">--</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">Total</div>
+          <div class="score-value" id="totalScore">--</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // Dark Mode 功能
+    // ============================================
+    
+    // 初始化主題
+    function initTheme() {
+      // 檢查 localStorage 中是否有保存的主題
+      const savedTheme = localStorage.getItem('theme');
+      
+      if (savedTheme) {
+        // 使用保存的主題
+        setTheme(savedTheme);
+      } else {
+        // 檢查系統偏好
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+      }
+    }
+    
+    // 設定主題
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      const text = document.getElementById('theme-text');
+      // 顯示「切換到什麼模式」而不是「目前是什麼模式」
+      text.textContent = theme === 'dark' ? 'LIGHT' : 'DARK';
+      localStorage.setItem('theme', theme);
+    }
+    
+    // 切換主題
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+    }
+    
+    // 監聽系統主題變化
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      // 只有在用戶沒有手動設定過主題時才自動切換
+      if (!localStorage.getItem('theme')) {
+        setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+    
+    // ============================================
+    // 過渡動畫邏輯說明
+    // ============================================
+    /*
+    當切換 Dark/Light Mode 時，會看到平滑的顏色過渡動畫。
+    這是怎麼做到的？
+    
+    【核心技術：CSS Variables + CSS Transition】
+    
+    1. CSS Variables (CSS 自定義屬性)
+       --------------------------------
+       在 CSS 中定義顏色變數：
+       
+       :root {
+         --bg-color: #ffffff;      // Light Mode 白色背景
+         --text-color: #000000;    // Light Mode 黑色文字
+       }
+       
+       [data-theme="dark"] {
+         --bg-color: #000000;      // Dark Mode 黑色背景
+         --text-color: #ffffff;    // Dark Mode 白色文字
+       }
+       
+       使用變數：
+       body {
+         background: var(--bg-color);
+         color: var(--text-color);
+       }
+    
+    2. CSS Transition (過渡動畫)
+       --------------------------
+       告訴瀏覽器：當屬性改變時，不要立刻改變，而是平滑過渡
+       
+       body {
+         transition: background-color 0.3s, color 0.3s;
+         // 意思是：背景色和文字色改變時，花 0.3 秒平滑過渡
+       }
+       
+       .btn {
+         transition: all 0.3s ease;
+         // 意思是：所有屬性改變時，花 0.3 秒平滑過渡
+         // ease = 緩動函數（開始慢→中間快→結束慢）
+       }
+    
+    3. 完整觸發流程
+       -------------
+       Step 1: 用戶點擊 DARK/LIGHT 按鈕
+       
+       Step 2: JavaScript 執行 toggleTheme()
+               → 讀取目前主題 'light'
+               → 切換到 'dark'
+       
+       Step 3: setTheme('dark') 執行
+               → document.documentElement.setAttribute('data-theme', 'dark')
+               → 在 <html> 標籤加上 data-theme="dark" 屬性
+       
+       Step 4: CSS 偵測到屬性改變
+               → 瀏覽器發現 [data-theme="dark"] 選擇器生效了
+               → 套用 Dark Mode 的 CSS Variables
+               → --bg-color 從 #ffffff 變成 #000000
+               → --text-color 從 #000000 變成 #ffffff
+       
+       Step 5: Transition 動畫觸發
+               → 瀏覽器發現 background-color 要從白變黑
+               → 因為有 transition: background-color 0.3s;
+               → 自動計算 0.3 秒內的中間值
+               → 產生平滑漸變動畫！
+    
+    4. 為什麼看起來很平滑？
+       -------------------
+       瀏覽器會自動計算中間的過渡幀：
+       
+       背景色從白到黑 (0.3秒內)：
+       t=0.00s: #ffffff (白)
+       t=0.05s: #e6e6e6 (淺灰)
+       t=0.10s: #cccccc (灰)
+       t=0.15s: #999999 (中灰)
+       t=0.20s: #666666 (深灰)
+       t=0.25s: #333333 (很深灰)
+       t=0.30s: #000000 (黑)
+       
+       每秒 60 幀，0.3 秒就是 18 個漸變幀，非常平滑！
+    
+    5. 哪些元素有過渡動畫？
+       -------------------
+       所有使用 CSS Variables 的元素都會有：
+       - body 背景和文字
+       - 按鈕背景和文字
+       - 輸入框邊框
+       - 分數顯示區域
+       - Alert 提示框
+       - Loading 動畫
+       
+       因為它們都用 var(--xxx) 引用變數，
+       變數值改變時，都會觸發 transition！
+    
+    6. 實際範例
+       --------
+       Light Mode 下按鈕：
+       .btn {
+         background: var(--btn-bg);    // = #000000 (黑)
+         color: var(--btn-text);       // = #ffffff (白)
+         transition: all 0.3s ease;
+       }
+       
+       切換到 Dark Mode：
+       .btn {
+         background: var(--btn-bg);    // = #ffffff (白)
+         color: var(--btn-text);       // = #000000 (黑)
+         transition: all 0.3s ease;
+       }
+       
+       因為有 transition，背景色會從黑平滑變白，
+       文字色會從白平滑變黑，整個過程 0.3 秒！
+    
+    7. 技術優勢
+       --------
+       ✅ 不需要 JavaScript 動畫
+       ✅ 瀏覽器原生支援，效能最佳
+       ✅ 硬體加速，不會卡頓
+       ✅ 只需改變一個屬性，所有元素自動更新
+       ✅ 程式碼簡潔，維護容易
+    
+    總結：
+    CSS Variables 提供「顏色值」
+    CSS Transition 提供「過渡效果」
+    JavaScript 只需改變 data-theme 屬性
+    瀏覽器會自動完成所有平滑動畫！
+    */
+    
+    // ============================================
+    // 查詢成績功能
+    // ============================================
+    
+    // 查詢成績
+    async function queryScore() {
+    const studentId = document.getElementById('studentId').value.trim();
+    const studentName = document.getElementById('studentName').value.trim();
+    const alertContainer = document.getElementById('alert-container');
+  
+    alertContainer.innerHTML = '';
+  
+    if (!studentId || !studentName) {
+      showAlert('請輸入學號和姓名', 'error');
+      return;
+    }
+  
+    document.getElementById('querySection').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result-section').style.display = 'none';
+    document.body.classList.add('loading-active');
+  
+    try {
+      const apiUrl = 'https://script.google.com/macros/s/AKfycbwyVqfpNIPE1E_EXds2zk4veSHOnq-PMYm4TtfI3e1hC_PMCUu3fYu5SjJ3g0B7RESdJg/exec';
+  
+      // 向後端傳送 POST 請求
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'getVerifiedScore',
+          studentId: studentId,
+          studentName: studentName
+        })
+      });
+
+      const result = await response.json();
+      onScoreSuccess(result);
+  
+    } catch (error) {
+      console.error('Error fetching score:', error);
+      onFailure(error);
+    } finally {
+      document.body.classList.remove('loading-active');
+    }
+  }
+
+    
+    // 成績查詢成功
+    function onScoreSuccess(result) {
+      document.getElementById('loading').style.display = 'none';
+      
+      // 移除 loading-active class
+      document.body.classList.remove('loading-active');
+      
+      if (result.success) {
+        // 顯示當前時間（英文格式）
+        const now = new Date();
+        const options = { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+        const dateStr = now.toLocaleString('en-US', options) + ' GMT+8';
+        document.getElementById('scoreDate').textContent = dateStr;
+        
+        // 顯示學生資訊
+        document.getElementById('displayStudentId').textContent = result.studentId;
+        document.getElementById('displayName').textContent = result.name;
+        document.getElementById('displayDepartment').textContent = result.department;
+        
+        // 顯示各項成績
+        document.getElementById('hw1Score').textContent = result.hw1;
+        document.getElementById('hw2Score').textContent = result.hw2;
+        document.getElementById('hw3Score').textContent = result.hw3;
+        document.getElementById('totalScore').textContent = result.totalScore;
+        
+        document.getElementById('result-section').style.display = 'block';
+        
+      } else {
+        document.getElementById('querySection').style.display = 'block';
+        showAlert(result.message, 'error');
+      }
+    }
+    
+    // 錯誤處理
+    function onFailure(error) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('querySection').style.display = 'block';
+      
+      // 移除 loading-active class
+      document.body.classList.remove('loading-active');
+      
+      showAlert('系統錯誤，請稍後再試', 'error');
+      console.error(error);
+    }
+    
+    // 顯示提示訊息
+    function showAlert(message, type) {
+      const alertContainer = document.getElementById('alert-container');
+      const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+      alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+      
+      setTimeout(() => {
+        alertContainer.innerHTML = '';
+      }, 3000);
+    }
+    
+    // 返回登入頁面
+    function backToLogin() {
+      document.getElementById('result-section').style.display = 'none';
+      document.getElementById('querySection').style.display = 'block';
+      
+      // 清空輸入框
+      document.getElementById('studentId').value = '';
+      document.getElementById('studentName').value = '';
+    }
+    
+    // Enter 鍵觸發查詢
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化主題
+      initTheme();
+      
+      // Enter 鍵事件
+      document.getElementById('studentId').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') queryScore();
+      });
+      document.getElementById('studentName').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') queryScore();
+      });
+    });
+  </script>
+</body>
+</html>
