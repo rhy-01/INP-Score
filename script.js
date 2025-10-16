@@ -117,4 +117,25 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('studentName').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') queryScore();
   });
+
+  // Scroll detection for hiding/showing top buttons
+  const topButtons = document.querySelector('.top-buttons');
+  const resultSection = document.getElementById('result-section');
+
+  window.addEventListener('scroll', function() {
+    // Only apply scroll behavior when result section is visible
+    if (resultSection.style.display !== 'block') return;
+
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const isMobile = window.innerWidth <= 768;
+    const threshold = isMobile ? 20 : 50; // Lower threshold for mobile
+
+    if (scrollTop > threshold) {
+      // Scrolling down & past threshold - hide buttons
+      topButtons.classList.add('hidden');
+    } else {
+      // At the top (within threshold) - show buttons
+      topButtons.classList.remove('hidden');
+    }
+  });
 });

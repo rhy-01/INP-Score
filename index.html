@@ -12,10 +12,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-    <span id="theme-text">DARK</span>
-  </button>
-
   <div class="container">
     <div class="query-section" id="querySection">
       <h1 class="query-title">Score</h1>
@@ -44,9 +40,15 @@
     </div>
 
     <div id="result-section" class="result-section">
-      <button class="back-btn" onclick="backToLogin()">← Back to Login</button>
+      <div class="result-content">
+        <div class="top-buttons">
+          <button class="back-btn" onclick="backToLogin()">← Back to Login</button>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+            <span id="theme-text">DARK</span>
+          </button>
+        </div>
 
-      <div class="score-header">
+        <div class="score-header">
         <div class="score-left">
           <div class="score-title">Introduction to Network Programming</div>
           <div class="score-date" id="scoreDate">October 10, 2025 1:19 p.m. GMT+8</div>
@@ -68,9 +70,12 @@
       </div>
 
       <div class="score-list">
-        <div class="score-item">
+        <div class="score-item hw1-demo">
           <div class="score-label">Homework 1</div>
-          <div class="score-value" id="hw1Score">--</div>
+          <div class="score-with-demo">
+            <span class="demo-label">DEMO</span>
+            <div class="score-value" id="hw1Score">--</div>
+          </div>
         </div>
         <div class="score-item">
           <div class="score-label">Homework 2</div>
@@ -86,6 +91,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <script src="script.js"></script>

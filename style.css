@@ -61,30 +61,23 @@ body {
 }
 
 .theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  border-radius: 3px;
+  display: inline-block;
+  padding: 12px 24px;
   background: var(--btn-bg);
   color: var(--btn-text);
-  border: 2px solid transparent;
-  cursor: pointer;
+  border: none;
+  border-radius: 3px;
   font-size: 16px;
   font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  letter-spacing: 0.5px;
-  z-index: 1000;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .theme-toggle:hover {
   background: var(--bg-color);
   color: var(--text-color);
   border: 2px solid var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 10px 22px;
 }
 
 .container {
@@ -226,15 +219,20 @@ input::placeholder {
 .result-section {
   display: none;
   background: transparent;
-  padding: 80px 60px;
   min-height: 600px;
+}
+
+.result-content {
+  padding: 0 60px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .score-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 80px;
+  margin-bottom: 50px;
 }
 
 .score-left {
@@ -249,6 +247,30 @@ input::placeholder {
   margin-bottom: 12px;
 }
 
+.top-buttons {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+  margin-bottom: 40px;
+  background: var(--bg-color);
+  z-index: 100;
+  transition: all 0.3s ease;
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.top-buttons.hidden {
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+}
+
+
 .back-btn {
   display: inline-block;
   padding: 12px 24px;
@@ -260,7 +282,6 @@ input::placeholder {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  margin-bottom: 40px;
 }
 
 .back-btn:hover {
@@ -307,11 +328,12 @@ input::placeholder {
 }
 
 .score-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   padding: 28px 0;
   border-bottom: 1px solid var(--border-color);
+  gap: 20px;
 }
 
 .score-item:first-child {
@@ -333,12 +355,13 @@ input::placeholder {
 }
 
 .score-label {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 400;
   color: var(--text-color);
 }
 
 .score-item:last-child .score-label {
+  font-size: 42px;
   font-weight: 700;
 }
 
@@ -346,6 +369,40 @@ input::placeholder {
   font-size: 48px;
   font-weight: 700;
   color: var(--text-color);
+}
+
+.score-with-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.demo-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 8px 0;
+  color: var(--text-secondary);
+}
+
+.score-with-demo .score-value {
+  text-align: center;
+  border: 2px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 4px 16px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  width: 110px;
+}
+
+.score-value {
+  min-width: 80px;
+  text-align: right;
 }
 
 @media (max-width: 768px) {
@@ -409,14 +466,14 @@ input::placeholder {
     margin-top: 40px;
   }
 
-  .result-section {
-    padding: 40px 25px;
+  .result-content {
+    padding: 0 25px 40px;
   }
 
   .score-header {
     flex-direction: column;
     gap: 30px;
-    margin-bottom: 50px;
+    margin-bottom: 35px;
   }
 
   .score-right {
@@ -442,6 +499,7 @@ input::placeholder {
 
   .score-item {
     padding: 24px 0;
+    gap: 15px;
   }
 
   .score-label {
@@ -453,7 +511,7 @@ input::placeholder {
   }
 
   .score-item:last-child .score-label {
-    font-size: 26px;
+    font-size: 30px;
   }
 
   .score-value {
@@ -464,14 +522,50 @@ input::placeholder {
     font-size: 44px;
   }
 
+  .top-buttons {
+    padding: 15px 0;
+  }
+
   .back-btn {
-    margin-bottom: 30px;
-    width: 100%;
+    flex: 1;
     padding: 16px;
     font-size: 16px;
   }
 
+  .back-btn:hover {
+    padding: 14px;
+  }
+
+  .theme-toggle {
+    padding: 16px 20px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    padding: 14px 18px;
+  }
+
   .loading {
     background: var(--bg-color);
+  }
+
+  .demo-label {
+    font-size: 11px;
+    padding: 6px 0;
+    letter-spacing: 1px;
+  }
+
+  .score-with-demo {
+    gap: 8px;
+  }
+
+  .score-with-demo .score-value {
+    padding: 4px 12px;
+    width: 90px;
+  }
+
+  .score-value {
+    min-width: 60px;
   }
 }
