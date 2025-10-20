@@ -77,9 +77,11 @@ async function queryScore() {
       document.getElementById('hw3Score').textContent = result.hw3;
       document.getElementById('totalScore').textContent = result.totalScore;
 
+      document.body.classList.add('result-active');
       document.getElementById('result-section').style.display = 'block';
     } else {
       document.getElementById('querySection').style.display = 'block';
+      document.body.classList.remove('result-active');
       showAlert(result.message, 'error');
     }
   } catch (error) {
@@ -87,6 +89,7 @@ async function queryScore() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('querySection').style.display = 'block';
     document.body.classList.remove('loading-active');
+    document.body.classList.remove('result-active');
     showAlert('系統錯誤，請稍後再試', 'error');
   }
 }
@@ -106,6 +109,7 @@ function backToLogin() {
   document.getElementById('querySection').style.display = 'block';
   document.getElementById('studentId').value = '';
   document.getElementById('studentName').value = '';
+  document.body.classList.remove('result-active');
 }
 
 document.addEventListener('DOMContentLoaded', function() {

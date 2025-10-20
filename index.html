@@ -41,57 +41,59 @@
 
     <div id="result-section" class="result-section">
       <div class="result-content">
-        <div class="top-buttons">
-          <button class="back-btn" onclick="backToLogin()">← Back to Login</button>
-          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-            <span id="theme-text">DARK</span>
-          </button>
+        <div class="result-hero">
+          <div class="top-buttons">
+            <button class="back-btn" onclick="backToLogin()">← Back to Login</button>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+              <span id="theme-text">DARK</span>
+            </button>
+          </div>
+
+          <div class="score-header">
+            <div class="score-left">
+              <div class="score-title">Introduction to Network Programming</div>
+              <div class="score-date" id="scoreDate">October 10, 2025 1:19 p.m. GMT+8</div>
+            </div>
+            <div class="score-right">
+              <div class="student-info-item">
+                <span class="student-info-label">Student ID</span>
+                <div class="student-info-value" id="displayStudentId">--</div>
+              </div>
+              <div class="student-info-item">
+                <span class="student-info-label">Name</span>
+                <div class="student-info-value" id="displayName">--</div>
+              </div>
+              <div class="student-info-item">
+                <span class="student-info-label">Department</span>
+                <div class="student-info-value" id="displayDepartment">--</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="score-header">
-        <div class="score-left">
-          <div class="score-title">Introduction to Network Programming</div>
-          <div class="score-date" id="scoreDate">October 10, 2025 1:19 p.m. GMT+8</div>
-        </div>
-        <div class="score-right">
-          <div class="student-info-item">
-            <span class="student-info-label">Student ID</span>
-            <div class="student-info-value" id="displayStudentId">--</div>
+        <div class="score-list">
+          <div class="score-item hw1-demo">
+            <div class="score-label">Homework 1</div>
+            <div class="score-with-demo">
+              <span class="demo-label">DEMO</span>
+              <div class="score-value" id="hw1Score">--</div>
+            </div>
           </div>
-          <div class="student-info-item">
-            <span class="student-info-label">Name</span>
-            <div class="student-info-value" id="displayName">--</div>
+          <div class="score-item">
+            <div class="score-label">Homework 2</div>
+            <div class="score-value" id="hw2Score">--</div>
           </div>
-          <div class="student-info-item">
-            <span class="student-info-label">Department</span>
-            <div class="student-info-value" id="displayDepartment">--</div>
+          <div class="score-item">
+            <div class="score-label">Homework 3</div>
+            <div class="score-value" id="hw3Score">--</div>
           </div>
-        </div>
-      </div>
-
-      <div class="score-list">
-        <div class="score-item hw1-demo">
-          <div class="score-label">Homework 1</div>
-          <div class="score-with-demo">
-            <span class="demo-label">DEMO</span>
-            <div class="score-value" id="hw1Score">--</div>
+          <div class="score-item">
+            <div class="score-label">Total</div>
+            <div class="score-value" id="totalScore">--</div>
           </div>
-        </div>
-        <div class="score-item">
-          <div class="score-label">Homework 2</div>
-          <div class="score-value" id="hw2Score">--</div>
-        </div>
-        <div class="score-item">
-          <div class="score-label">Homework 3</div>
-          <div class="score-value" id="hw3Score">--</div>
-        </div>
-        <div class="score-item">
-          <div class="score-label">Total</div>
-          <div class="score-value" id="totalScore">--</div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 
   <script src="script.js"></script>

@@ -12,8 +12,22 @@ html, body {
 }
 
 body {
-  scroll-snap-type: y proximity;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+body.result-active {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 96px;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 992px) {
+  body.result-active {
+    scroll-padding-top: 96px;
+  }
+  body.result-active .container {
+    padding: 24px 64px 48px;
+  }
 }
 
 :root {
@@ -231,6 +245,18 @@ input::placeholder {
   padding: 0 60px 80px;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 0 auto;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .score-header {
@@ -238,7 +264,6 @@ input::placeholder {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 50px;
-  scroll-snap-align: start;
 }
 
 .score-left {
@@ -254,17 +279,16 @@ input::placeholder {
 }
 
 .top-buttons {
-  position: sticky;
-  top: 0;
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 0;
-  margin-bottom: 40px;
+  padding: 0;
+  margin-bottom: 8px;
   background: transparent;
-  z-index: 100;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+}
+
+body.result-active .container {
+  padding: 24px 32px 40px;
 }
 
 
@@ -322,6 +346,9 @@ input::placeholder {
 
 .score-list {
   margin-bottom: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex: 0 0 auto;
 }
 
 .score-item {
