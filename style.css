@@ -11,6 +11,11 @@ html, body {
   overflow-x: hidden;
 }
 
+body {
+  scroll-snap-type: y proximity;
+  overflow-y: scroll;
+}
+
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
@@ -220,8 +225,6 @@ input::placeholder {
   display: none;
   background: transparent;
   min-height: 100vh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .result-content {
@@ -235,6 +238,7 @@ input::placeholder {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 50px;
+  scroll-snap-align: start;
 }
 
 .score-left {
@@ -257,8 +261,10 @@ input::placeholder {
   gap: 16px;
   padding: 20px 0;
   margin-bottom: 40px;
-  background: var(--bg-color);
+  background: transparent;
   z-index: 100;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 
@@ -515,6 +521,10 @@ input::placeholder {
 
   .top-buttons {
     padding: 15px 0;
+  }
+
+  .result-content {
+    padding: 0 25px 40px;
   }
 
   .back-btn {
